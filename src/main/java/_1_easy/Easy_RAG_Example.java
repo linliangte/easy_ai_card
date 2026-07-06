@@ -14,10 +14,9 @@ import java.nio.file.Path;
 import java.util.Scanner;
 import java.util.stream.Stream;
 
-import static shared.Utils.OPENAI_API_KEY;
 
 public class Easy_RAG_Example {
-
+    private static final String OPENAI_API_KEY = System.getenv("OPENAI_API_KEY");
     private static final ChatModel CHAT_MODEL = OpenAiChatModel.builder()
             .apiKey(OPENAI_API_KEY)
             .baseUrl("https://ws-01xqqx90gae93m51.cn-beijing.maas.aliyuncs.com/compatible-mode/v1")
@@ -38,9 +37,9 @@ public class Easy_RAG_Example {
 
         Scanner sc = new Scanner(System.in);
         while (true) {
-            System.out.print("你");
+            System.out.print("你:");
             String q = sc.nextLine();
-            System.out.println("AI" + assistant.answer(q));
+            System.out.println("AI:" + assistant.answer(q));
         }
     }
 
