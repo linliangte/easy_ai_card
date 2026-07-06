@@ -1,69 +1,63 @@
 package _1_easy;
 
-import agent.AgentService;
-import agent.WorldAgentRouter;
-import dev.langchain4j.data.document.Document;
-import dev.langchain4j.data.segment.TextSegment;
-import dev.langchain4j.memory.chat.MessageWindowChatMemory;
 import dev.langchain4j.model.chat.ChatModel;
 import dev.langchain4j.model.ollama.OllamaEmbeddingModel;
 import dev.langchain4j.model.openai.OpenAiChatModel;
-import dev.langchain4j.rag.content.retriever.ContentRetriever;
-import dev.langchain4j.rag.content.retriever.EmbeddingStoreContentRetriever;
-import dev.langchain4j.service.AiServices;
-import dev.langchain4j.store.embedding.EmbeddingStoreIngestor;
-import dev.langchain4j.store.embedding.EmbeddingStore;
-import dev.langchain4j.store.embedding.inmemory.InMemoryEmbeddingStore;
 import dev.langchain4j.model.embedding.EmbeddingModel;
-
-import llm.LlmService;
 import rag.RagFactory;
 import shared.Assistant;
-import shared.Utils;
 
-import java.util.List;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Scanner;
+import java.util.stream.Stream;
 
-import static dev.langchain4j.data.document.loader.FileSystemDocumentLoader.loadDocuments;
-import static dev.langchain4j.model.openai.OpenAiChatModelName.GPT_4_O_MINI;
-import static shared.Utils.*;
+import static shared.Utils.OPENAI_API_KEY;
 
 public class Easy_RAG_Example {
 
-    // ===== LLM（大模型） =====
     private static final ChatModel CHAT_MODEL = OpenAiChatModel.builder()
             .apiKey(OPENAI_API_KEY)
             .baseUrl("https://ws-01xqqx90gae93m51.cn-beijing.maas.aliyuncs.com/compatible-mode/v1")
             .modelName("qwen3.6-flash")
             .build();
 
-    // ===== embedding（本地 Ollama）=====
     private static final EmbeddingModel EMBEDDING_MODEL =
             OllamaEmbeddingModel.builder()
                     .baseUrl("http://localhost:11434")
                     .modelName("nomic-embed-text")
                     .build();
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
 
-        List<Document> docs =
-                loadDocuments(Utils.toPath("world/"), Utils.glob("*.md"));
+        String systemPrompt = loadWorldFiles();
 
-        Assistant rag = RagFactory.create(docs, CHAT_MODEL, EMBEDDING_MODEL);
-
-        WorldAgentRouter router = new WorldAgentRouter(EMBEDDING_MODEL);
-
-        LlmService llm = new LlmService(CHAT_MODEL);
-
-        AgentService agent = new AgentService(router, rag, llm);
+        Assistant assistant = RagFactory.create(systemPrompt, CHAT_MODEL, EMBEDDING_MODEL);
 
         Scanner sc = new Scanner(System.in);
-
         while (true) {
-            System.out.print("你：");
+            System.out.print("你");
             String q = sc.nextLine();
-
-            System.out.println("AI：" + agent.answer(q));
+            System.out.println("AI" + assistant.answer(q));
         }
+    }
+
+    private static String loadWorldFiles() throws IOException {
+        Path worldDir = Path.of("src/main/resources/world");
+        StringBuilder sb = new StringBuilder();
+        try (Stream<Path> stream = Files.list(worldDir)) {
+            stream.filter(p -> p.toString().endsWith(".md"))
+                    .sorted()
+                    .forEach(p -> {
+                        try {
+                            sb.append(Files.readString(p, StandardCharsets.UTF_8)).append("\n\n");
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    });
+        }
+        return sb.toString().trim();
     }
 }
