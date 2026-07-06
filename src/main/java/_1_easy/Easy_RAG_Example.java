@@ -1,6 +1,5 @@
 package _1_easy;
 
-import _2_naive.Naive_RAG_Example;
 import agent.AgentService;
 import agent.WorldAgentRouter;
 import dev.langchain4j.data.document.Document;
@@ -33,7 +32,7 @@ public class Easy_RAG_Example {
 
     // ===== LLM（大模型） =====
     private static final ChatModel CHAT_MODEL = OpenAiChatModel.builder()
-            .apiKey("sk-ws-H.RXYPIYP.KWwY.MEYCIQD1G330GuldK4nQjdrIyn8GVQfPac5ggqHup1Wt0As-oQIhAOB4z7yzv70ubgoFcIx23i_TCUDLVljEAbSO8Z-AVwJe")
+            .apiKey(OPENAI_API_KEY)
             .baseUrl("https://ws-01xqqx90gae93m51.cn-beijing.maas.aliyuncs.com/compatible-mode/v1")
             .modelName("qwen3.6-flash")
             .build();
