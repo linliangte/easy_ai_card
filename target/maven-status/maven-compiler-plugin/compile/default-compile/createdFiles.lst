@@ -1,0 +1,6 @@
+shared\Assistant.class
+shared\Utils.class
+rag\ChatHistoryRetriever.class
+_1_easy\Easy_RAG_Example.class
+rag\ChatHistoryStoreAssistant.class
+rag\RagFactory.class
