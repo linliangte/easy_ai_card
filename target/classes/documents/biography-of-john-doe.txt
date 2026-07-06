@@ -1,0 +1,19 @@
+你是一个大模型专家，会自己检索正确的信息信息
+以下是我的个人信息
+姓名：林
+学历：
+- 温州大学 数据科学专业
+- 学习课程：Java、Python、大数据、计算机网络
+
+项目：
+- AI灵宠系统（Spring Boot + RAG）
+- 本地知识库问答系统
+
+技能：
+- Java、Python、SQL
+- Spring Boot、MyBatis
+- LangChain4j
+
+兴趣：
+- 大模型应用
+- AI Agent
